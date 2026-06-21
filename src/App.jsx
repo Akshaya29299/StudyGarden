@@ -14,7 +14,7 @@ export default function App() {
 
   const level = Math.floor(xp / 50) + 1;
 
-  // 🌿 LOAD EVERYTHING ON START
+  // 🌿 Load saved data
   useEffect(() => {
     setXp(Number(localStorage.getItem("xp") || 0));
     setStreak(Number(localStorage.getItem("streak") || 0));
@@ -27,7 +27,7 @@ export default function App() {
     }
   }, []);
 
-  // 🌿 suggestions (Wikipedia search)
+  // 🌿 Wikipedia suggestions
   async function fetchSuggestions(value) {
     if (!value) return setSuggestions([]);
 
@@ -44,9 +44,9 @@ export default function App() {
   }
 
   function handleInput(e) {
-    const v = e.target.value;
-    setTopic(v);
-    fetchSuggestions(v);
+    const value = e.target.value;
+    setTopic(value);
+    fetchSuggestions(value);
   }
 
   function selectSuggestion(s) {
@@ -54,7 +54,7 @@ export default function App() {
     setSuggestions([]);
   }
 
-  // 🌿 clean text engine
+  // 🌿 clean text
   function cleanSentence(s) {
     return s
       .replace(/\([^)]*\)/g, "")
@@ -77,7 +77,7 @@ export default function App() {
     return unique.slice(0, 8).map((s) => `• ${s}`);
   }
 
-  // 🧠 GENERATE NOTES (FIXED + SAFE MEMORY)
+  // 🧠 Generate Notes
   async function generateNotes(customTopic) {
     const finalTopic = customTopic || topic;
     if (!finalTopic.trim()) return;
@@ -101,7 +101,7 @@ export default function App() {
 
       setNotes(newNote);
 
-      // 🌿 FORCE SAVE MEMORY (NO ASYNC ISSUES)
+      // 🌿 history update
       const newHistory = [
         {
           title: data.title,
@@ -113,7 +113,7 @@ export default function App() {
       setHistory(newHistory);
       localStorage.setItem("history", JSON.stringify(newHistory));
 
-      // 🌱 XP + streak (also immediate save)
+      // 🌱 XP system
       const newXp = xp + 15;
       const newStreak = streak + 1;
 
@@ -132,7 +132,7 @@ export default function App() {
     generateNotes(title);
   }
 
-  // 🖥 fullscreen
+  // 🖥 fullscreen toggle
   function toggleFullScreen() {
     const el = document.documentElement;
 
@@ -160,7 +160,9 @@ export default function App() {
           placeholder="Enter topic..."
         />
 
-        <button onClick={() => generateNotes()}>🧠 Generate</button>
+        <button onClick={() => generateNotes()}>
+          🧠 Generate
+        </button>
 
         <button onClick={toggleFullScreen}>
           🖥 {isFull ? "Exit" : "Full Screen"}
